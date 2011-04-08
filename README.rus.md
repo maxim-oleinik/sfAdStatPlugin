@@ -117,3 +117,47 @@ sfAdStatPlugin
             medium:   utm_medium
             content:  utm_content
             campaign: utm_campaign
+
+
+При регистрации пользователя сохранить ему click_id
+---------------------------------------------------
+
+  * schema.yml
+
+        [yml]
+        sfGuardUser:
+          columns:
+            click_id:   { type: integer(4), unique: true }
+          relations:
+            AdClick:
+              local: click_id
+              foreign: id
+              autoComplete: false
+
+
+  * В таблицу `sf_guard_user` добавить колонку `click_id`
+
+        [php]
+        public function migrate($upDown)
+        {
+            $this->column($upDown, 'sf_guard_user', 'click_id', 'integer', 4);
+
+            $this->index($upDown, 'sf_guard_user', 'click_id', array(
+                'fields' => array(click_id),
+                'type'   => 'unique',
+            ));
+
+            $this->foreignKey($upDown, 'sf_guard_user', 'User_VS_AdClick', array(
+                'local'        => 'click_id',
+                'foreign'      => 'id',
+                'foreignTable' => 'sf_ad_clicks',
+                'onDelete'     => 'SET NULL',
+            ));
+        }
+
+
+  * В app.yml указать название колонки `click_id`
+
+        [yml]
+        ad_stat_plugin:
+          user_click_id_column: click_id
