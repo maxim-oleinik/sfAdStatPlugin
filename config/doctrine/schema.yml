@@ -1,0 +1,22 @@
+options:
+  type: INNODB
+  charset: utf8
+
+AdClick:
+  tableName:  sf_ad_clicks
+  actAs:
+    Timestampable:
+      updated:
+        disabled: true
+  columns:
+    campaign:               { type: string(255) }
+    source:                 { type: string(255) }
+    medium:                 { type: string(255) }
+    content:                { type: string(255) }
+    user_agent:             { type: string(255) }
+    remote_addr:            { type: string(15)  }
+    referer:                { type: string(255) }
+    request:                { type: string(255) }
+  options:
+    symfony:
+      form: false

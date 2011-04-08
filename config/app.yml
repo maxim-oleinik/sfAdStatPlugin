@@ -1,0 +1,11 @@
+
+all:
+  ad_stat_plugin:
+    id_cookie_name:       ad     # Название куки для хранения id клика
+    id_cookie_ttl:        183    # Дней
+    user_click_id_column: false  # Колонка в sfGuardUser для записи id клика
+    request_params:
+      source:   utm_source
+      medium:   utm_medium
+      content:  utm_content
+      campaign: utm_campaign
