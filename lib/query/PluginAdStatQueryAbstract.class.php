@@ -6,12 +6,20 @@
 abstract class PluginAdStatQueryAbstract extends Doctrine_Query
 {
     /**
+     * Возвращает alias AdClick таблицы
+     *
+     * @abstract
+     * @return string
+     */
+    abstract public function getAdAlias();
+
+    /**
      * Возвращает колонку с датой
      *
      * @abstract
      * @return string
      */
-    abstract public function getDateColumn();
+    abstract public function getAdDateColumn();
 
     /**
      * Фильтровать по периоду времени
@@ -20,14 +28,14 @@ abstract class PluginAdStatQueryAbstract extends Doctrine_Query
      * @param DateTime|null $tillDate
      * @return PluginAdStatQueryAbstract
      */
-    public function filterDateInterval(DateTime $fromDate = null, DateTime $tillDate = null)
+    public function filterAdDateInterval(DateTime $fromDate = null, DateTime $tillDate = null)
     {
         if ($fromDate) {
-            $this->andWhere($this->getDateColumn(). ' >= ?', $fromDate->format('Y-m-d 00:00:00'));
+            $this->andWhere($this->getAdDateColumn(). ' >= ?', $fromDate->format('Y-m-d 00:00:00'));
         }
 
         if ($tillDate) {
-            $this->andWhere($this->getDateColumn(). ' <= ?', $tillDate->format('Y-m-d 23:59:59'));
+            $this->andWhere($this->getAdDateColumn(). ' <= ?', $tillDate->format('Y-m-d 23:59:59'));
         }
 
         return $this;
@@ -39,9 +47,9 @@ abstract class PluginAdStatQueryAbstract extends Doctrine_Query
      * @param  $source
      * @return PluginAdStatQueryAbstract
      */
-    public function filterSource($source)
+    public function filterAdSource($source)
     {
-        return $this->andWhere('ac.source = ?', $source);
+        return $this->andWhere($this->getAdAlias(). '.source = ?', $source);
     }
 
     /**
@@ -50,9 +58,9 @@ abstract class PluginAdStatQueryAbstract extends Doctrine_Query
      * @param  $content
      * @return PluginAdStatQueryAbstract
      */
-    public function filterContent($content)
+    public function filterAdContent($content)
     {
-        return $this->andWhere('ac.content = ?', $content);
+        return $this->andWhere($this->getAdAlias(). '.content = ?', $content);
     }
 
     /**
@@ -60,12 +68,14 @@ abstract class PluginAdStatQueryAbstract extends Doctrine_Query
      *
      * @return PluginAdStatQueryAbstract
      */
-    public function groupBySource()
+    public function groupByAdSource()
     {
+        $adAlias = $this->getAdAlias();
+
         return $this
-            ->select("ac.source, count({$this->getRootAlias()}.id)")
-            ->groupBy('ac.source')
-            ->orderBy('ac.source');
+                ->select("{$adAlias}.source, count({$this->getRootAlias()}.id)")
+                ->groupBy("{$adAlias}.source")
+                ->orderBy("{$adAlias}.source");
     }
 
     /**
@@ -73,12 +83,14 @@ abstract class PluginAdStatQueryAbstract extends Doctrine_Query
      *
      * @return PluginAdStatQueryAbstract
      */
-    public function groupByContent()
+    public function groupByAdContent()
     {
+        $adAlias = $this->getAdAlias();
+
         return $this
-            ->select("ac.content, count({$this->getRootAlias()}.id)")
-            ->groupBy('ac.content')
-            ->orderBy('ac.content');
+                ->select("{$adAlias}.content, count({$this->getRootAlias()}.id)")
+                ->groupBy("{$adAlias}.content")
+                ->orderBy("{$adAlias}.content");
     }
 
     /**
@@ -86,12 +98,12 @@ abstract class PluginAdStatQueryAbstract extends Doctrine_Query
      *
      * @return PluginAdStatQueryAbstract
      */
-    public function groupDaily()
+    public function groupAdDaily()
     {
         return $this
-            ->select("DATE_FORMAT({$this->getDateColumn()}, '%Y-%m-%d') date, count({$this->getRootAlias()}.id)")
-            ->groupBy('date')
-            ->orderBy('date');
+                ->select("DATE_FORMAT({$this->getAdDateColumn()}, '%Y-%m-%d') date, count({$this->getRootAlias()}.id)")
+                ->groupBy('date')
+                ->orderBy('date');
     }
 
     /**
@@ -99,11 +111,13 @@ abstract class PluginAdStatQueryAbstract extends Doctrine_Query
      *
      * @return PluginAdStatQueryAbstract
      */
-    public function groupMonthly()
+    public function groupAdMonthly()
     {
+        $dateColumn = $this->getAdDateColumn();
+
         return $this
-            ->select("DATE_FORMAT({$this->getDateColumn()}, '%M') date, count({$this->getRootAlias()}.id)")
-            ->groupBy('date')
-            ->orderBy($this->getDateColumn());
+                ->select("DATE_FORMAT({$dateColumn}, '%M') date, count({$this->getRootAlias()}.id)")
+                ->groupBy('date')
+                ->orderBy($dateColumn);
     }
 }

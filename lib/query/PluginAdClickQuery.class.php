@@ -6,11 +6,11 @@
 class PluginAdClickQuery extends PluginAdStatQueryAbstract
 {
     /**
-     * Создать запрос
+     * Создать запрос для статистики
      *
      * @return PluginAdClickQuery
      */
-    static public function createQuery()
+    static public function createAdStatQuery()
     {
         return parent::create(null, __CLASS__)
             ->setHydrationMode(Doctrine_Core::HYDRATE_NONE)
@@ -18,10 +18,18 @@ class PluginAdClickQuery extends PluginAdStatQueryAbstract
     }
 
     /**
-     * @see parent:getDateColumn()
+     * @see parent:getAdDateColumn()
      */
-    public function getDateColumn()
+    public function getAdDateColumn()
     {
         return 'ac.created_at';
+    }
+
+    /**
+     * @see parent:getAdAlias()
+     */
+    public function getAdAlias()
+    {
+        return 'ac';
     }
 }

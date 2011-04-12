@@ -16,8 +16,8 @@ class PluginAdStat
 
         foreach ($stats as &$stat) {
             $stat = $stat
-                ->filterDateInterval($fromDate, $tillDate)
-                ->groupBySource()
+                ->filterAdDateInterval($fromDate, $tillDate)
+                ->groupByAdSource()
                 ->execute();
         }
 
@@ -39,9 +39,9 @@ class PluginAdStat
 
         foreach ($stats as &$stat) {
             $stat = $stat
-                ->filterDateInterval($fromDate, $tillDate)
-                ->filterSource($source)
-                ->groupByContent()
+                ->filterAdDateInterval($fromDate, $tillDate)
+                ->filterAdSource($source)
+                ->groupByAdContent()
                 ->execute();
         }
 
@@ -63,9 +63,9 @@ class PluginAdStat
 
         foreach ($stats as &$stat) {
             $stat = $stat
-                ->filterDateInterval($fromDate, $tillDate)
-                ->filterSource($source)
-                ->groupDaily()
+                ->filterAdDateInterval($fromDate, $tillDate)
+                ->filterAdSource($source)
+                ->groupAdDaily()
                 ->execute();
         }
 
@@ -87,9 +87,9 @@ class PluginAdStat
 
         foreach ($stats as &$stat) {
             $stat = $stat
-                ->filterDateInterval($fromDate, $tillDate)
-                ->filterSource($source)
-                ->groupMonthly()
+                ->filterAdDateInterval($fromDate, $tillDate)
+                ->filterAdSource($source)
+                ->groupAdMonthly()
                 ->execute();
         }
 
@@ -111,9 +111,9 @@ class PluginAdStat
 
         foreach ($stats as &$stat) {
             $stat = $stat
-                ->filterDateInterval($fromDate, $tillDate)
-                ->filterContent($content)
-                ->groupDaily()
+                ->filterAdDateInterval($fromDate, $tillDate)
+                ->filterAdContent($content)
+                ->groupAdDaily()
                 ->execute();
         }
 
@@ -126,12 +126,12 @@ class PluginAdStat
      * @static
      * @return array
      */
-    private static function getStatQueries()
+    protected static function getStatQueries()
     {
         return array(
-            'clicks'        => PluginAdClickQuery::createQuery(),
-            'registrations' => PluginAdRegistrationsQuery::createQuery(),
-            'orders'        => PluginAdOrdersQuery::createQuery(),
+            'clicks'        => PluginAdClickQuery::createAdStatQuery(),
+            'registrations' => PluginAdRegistrationsQuery::createAdStatQuery(),
+            'orders'        => PluginAdOrdersQuery::createAdStatQuery(),
         );
     }
 
@@ -142,7 +142,7 @@ class PluginAdStat
      * @param  array $stat
      * @return array
      */
-    private static function formatStat(array $stat)
+    protected static function formatStat(array $stat)
     {
         $return = array();
 
