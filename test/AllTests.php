@@ -1,0 +1,31 @@
+<?php
+namespace Test\sfAdStatPlugin;
+
+require_once dirname(__FILE__).'/bootstrap/all.php';
+
+
+/**
+ * AllTests
+ */
+class AllTests extends \PHPUnit_Framework_TestSuite
+{
+    /**
+     * TestSuite
+     */
+    public static function suite()
+    {
+        $suite = new AllTests('sfAdStatPlugin');
+
+        $base  = dirname(__FILE__);
+        $files = \sfFinder::type('file')->name('*Test.php')->in(array(
+            $base.'/functional',
+        ));
+
+        foreach ($files as $file) {
+            $suite->addTestFile($file);
+        }
+
+        return $suite;
+    }
+
+}
