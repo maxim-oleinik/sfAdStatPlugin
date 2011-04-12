@@ -93,4 +93,17 @@ abstract class PluginAdStatQueryAbstract extends Doctrine_Query
             ->groupBy('date')
             ->orderBy('date');
     }
+
+    /**
+     * Группировка по месяцам
+     *
+     * @return PluginAdStatQueryAbstract
+     */
+    public function groupMonthly()
+    {
+        return $this
+            ->select("DATE_FORMAT({$this->getDateColumn()}, '%M') date, count({$this->getRootAlias()}.id)")
+            ->groupBy('date')
+            ->orderBy($this->getDateColumn());
+    }
 }

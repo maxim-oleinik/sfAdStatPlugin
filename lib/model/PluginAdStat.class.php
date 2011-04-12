@@ -73,6 +73,30 @@ class PluginAdStat
     }
 
     /**
+     * Получить статистику по конкретному источнику, группировка по месяцам
+     *
+     * @static
+     * @param string   $source
+     * @param DateTime $fromDate
+     * @param DateTime $tillDate
+     * @return array
+     */
+    public static function getStatMonthlySource($source, DateTime $fromDate = null, DateTime $tillDate = null)
+    {
+        $stats = self::getStatQueries();
+
+        foreach ($stats as &$stat) {
+            $stat = $stat
+                ->filterDateInterval($fromDate, $tillDate)
+                ->filterSource($source)
+                ->groupMonthly()
+                ->execute();
+        }
+
+        return self::formatStat($stats);
+    }
+
+    /**
      * Получить статистику по конкретному объявлению, групировка по дням
      *
      * @static
