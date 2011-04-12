@@ -1,14 +1,14 @@
 <?php
 
 /**
- * PluginAdClicksQuery
+ * PluginAdClickQuery
  */
-class PluginAdClicksQuery extends PluginAdStatQueryAbstract
+class PluginAdClickQuery extends PluginAdStatQueryAbstract
 {
     /**
      * Создать запрос
      *
-     * @return PluginAdClicksQuery
+     * @return PluginAdClickQuery
      */
     static public function createQuery()
     {

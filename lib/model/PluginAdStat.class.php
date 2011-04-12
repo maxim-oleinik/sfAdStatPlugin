@@ -129,7 +129,7 @@ class PluginAdStat
     private static function getStatQueries()
     {
         return array(
-            'clicks'        => PluginAdClicksQuery::createQuery(),
+            'clicks'        => PluginAdClickQuery::createQuery(),
             'registrations' => PluginAdRegistrationsQuery::createQuery(),
             'orders'        => PluginAdOrdersQuery::createQuery(),
         );
