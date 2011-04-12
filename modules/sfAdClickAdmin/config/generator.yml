@@ -1,0 +1,35 @@
+generator:
+  class: sfDoctrineGenerator
+  param:
+    model_class:           AdClick
+    theme:                 admin
+    non_verbose_templates: true
+    with_show:             false
+    singular:              ~
+    plural:                ~
+    route_prefix:          sfAdClick
+    with_doctrine_route:   true
+    actions_base_class:    sfActions
+    css:                   false
+
+    config:
+      actions: ~
+      fields:
+        campaign:   { label: Кампания }
+        source:     { label: Источник }
+        medium:     { label: Тип }
+        content:    { label: Объявление }
+        created_at: { label: Дата }
+      list:
+        title: Рекламные переходы | <a href="#" onclick="$('#sf_admin_bar').slideToggle()">Поиск &darr;</a>
+        display: [campaign, source, medium, content, user_agent, remote_addr, referer, request, created_at]
+        sort: [created_at, desc]
+        max_per_page: 50
+        actions: {}
+        object_actions: {}
+        batch_actions: {}
+      filter:
+        display: [campaign, source, medium, content, created_at]
+      form:    ~
+      edit:    ~
+      new:     ~

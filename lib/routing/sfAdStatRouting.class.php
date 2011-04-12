@@ -52,4 +52,22 @@ class sfAdStatRouting
             )
         ));
     }
+
+    static public function addRouteForAdClickAdmin(sfEvent $event)
+    {
+        $routing = $event->getSubject();
+
+        $routing->prependRoute('sf_guard_user', new sfDoctrineRouteCollection(array(
+            'name'                 => 'sfAdClick',
+            'model'                => 'AdClick',
+            'module'               => 'sfAdClickAdmin',
+            'prefix_path'          => 'ad-click',
+            'with_show'            => false,
+            'with_wildcard_routes' => true,
+            'with_wildcard_object' => false,
+            'actions'              => array('list'),
+            'collection_actions'   => array(),
+            'requirements'         => array(),
+        )));
+    }
 }
