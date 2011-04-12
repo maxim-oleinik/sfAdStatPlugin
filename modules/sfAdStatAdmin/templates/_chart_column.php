@@ -1,0 +1,78 @@
+<?php
+/**
+ * Графики статистики переходов, регистраций, заказов за период
+ *
+ * @param array  $stat
+ * @param DateTime $fromDate
+ * @param DateTime $tillDate
+ */
+
+use_javascript('/sfAdStatPlugin/js/highcharts.js');
+
+$stat = $stat->getRawValue();
+
+?>
+
+<div id="chart_container" style="height: 400px;">
+</div>
+
+<script type="text/javascript">
+var chart;
+$(document).ready(function() {
+    chart = new Highcharts.Chart({
+        chart: {
+            renderTo: 'chart_container',
+            defaultSeriesType: 'column'
+        },
+        title: {
+            text: 'Статистика рекламы'
+        },
+        subtitle: {
+            text: '<?php echo ($fromDate) ?  $fromDate->format('d.m.Y') : '?' ?> - <?php echo ($tillDate) ? $tillDate->format('d.m.Y') : '?' ?>'
+        },
+        xAxis: {
+            categories: ['Переходы', 'Регистрации', 'Заказы']
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'Количество'
+            }
+        },
+        legend: {
+            layout: 'vertical',
+            backgroundColor: '#FFFFFF',
+            align: 'left',
+            verticalAlign: 'top',
+            x: 100,
+            y: 70,
+            floating: true,
+            shadow: true
+        },
+        tooltip: {
+            formatter: function() {
+                return ''+
+                    this.x +': '+ this.y;
+            }
+        },
+        plotOptions: {
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0
+            }
+        },
+        series: [
+            <?php foreach ($stat as $key => $row): ?>
+            {
+                name: '<?php echo $key ?>',
+                data: [
+                    <?php echo $row['clicks'] ?>,
+                    <?php echo $row['registrations'] ?>,
+                    <?php echo $row['orders'] ?>
+                ]
+            },
+            <?php endforeach; ?>
+        ]
+    });
+});
+</script>
