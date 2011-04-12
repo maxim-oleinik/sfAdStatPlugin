@@ -14,6 +14,6 @@ class sfAdStatComponents extends sfComponents
      */
     public function executeStatMonthlySource()
     {
-        $this->stat = PluginAdStat::getStatMonthlySource($this->source, $this->fromDate, $this->tillDate);
+        $this->stat = PluginAdClickTable::getStatMonthlySource($this->source, $this->fromDate, $this->tillDate);
     }
 }

@@ -12,7 +12,7 @@ class sfAdStatAdminActions extends sfActions
     {
         $this->init('sfAdStatStat', $request);
 
-        $this->stat = PluginAdStat::getStat($this->fromDate, $this->tillDate);
+        $this->stat = PluginAdClickTable::getStat($this->fromDate, $this->tillDate);
     }
 
     /**
@@ -24,7 +24,7 @@ class sfAdStatAdminActions extends sfActions
 
         $this->init('@sfAdStatStatSource?source='.$this->source, $request);
 
-        $this->stat = PluginAdStat::getStatSource($this->source, $this->fromDate, $this->tillDate);
+        $this->stat = PluginAdClickTable::getStatSource($this->source, $this->fromDate, $this->tillDate);
     }
 
     /**
@@ -36,7 +36,7 @@ class sfAdStatAdminActions extends sfActions
 
         $this->init('@sfAdStatDailyStatSource?source='.$this->source, $request);
 
-        $this->stat = PluginAdStat::getStatDailySource($this->source, $this->fromDate, $this->tillDate);
+        $this->stat = PluginAdClickTable::getStatDailySource($this->source, $this->fromDate, $this->tillDate);
     }
 
     /**
@@ -48,7 +48,7 @@ class sfAdStatAdminActions extends sfActions
 
         $this->init('@sfAdStatDailyStatContent?content='.$this->content, $request);
 
-        $this->stat = PluginAdStat::getStatDailyContent($this->content, $this->fromDate, $this->tillDate);
+        $this->stat = PluginAdClickTable::getStatDailyContent($this->content, $this->fromDate, $this->tillDate);
     }
 
     /**
