@@ -11,6 +11,9 @@ use_javascript('/sfAdStatPlugin/js/highcharts.js');
 
 $stat = $stat->getRawValue();
 
+$columns = sfConfig::get('app_ad_stat_plugin_columns');
+$chartColumns = sfConfig::get('app_ad_stat_plugin_chart_columns');
+
 ?>
 
 <div id="chart_container" style="height: 400px;">
@@ -62,18 +65,12 @@ $(document).ready(function() {
             borderWidth: 0
         },
         series: [
-            <?php
-                foreach (array(
-                    'clicks' => 'Переходы',
-                    'registrations' => 'Регистрации',
-                    'orders' => 'Заказы',
-                ) as $type => $name):
-            ?>
+            <?php foreach ($chartColumns as $column): ?>
             {
-                name: '<?php echo $name ?>',
+                name: '<?php echo isset($columns[$column]['title']) ? $columns[$column]['title'] : $column ?>',
                 data: [
                     <?php foreach ($stat as $row): ?>
-                        <?php echo $row[$type] ?>,
+                        <?php echo $row[$column] ?>,
                     <?php endforeach ?>
                 ]
             },

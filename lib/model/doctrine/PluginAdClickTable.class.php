@@ -5,6 +5,8 @@
  */
 class PluginAdClickTable extends Doctrine_Table
 {
+    protected static $queriesKeys = array();
+
     /**
      * Получить статистику, группировка по источнику
      *
@@ -131,11 +133,18 @@ class PluginAdClickTable extends Doctrine_Table
      */
     protected static function getStatQueries()
     {
-        return array(
-            'clicks'        => PluginAdClickQuery::createAdStatQuery(),
-            'registrations' => PluginAdRegistrationsQuery::createAdStatQuery(),
-            'orders'        => PluginAdOrdersQuery::createAdStatQuery(),
-        );
+        $columns = sfConfig::get('app_ad_stat_plugin_columns');
+
+        $queries = array();
+        self::$queriesKeys = array();
+        foreach ($columns as $key => $options) {
+            if (isset($options['query'])) {
+                self::$queriesKeys[] = $key;
+                $queries[$key] = $options['query']::createAdStatQuery();
+            }
+        }
+
+        return $queries;
     }
 
     /**
@@ -156,7 +165,7 @@ class PluginAdClickTable extends Doctrine_Table
         }
 
         foreach ($return as &$counts) {
-            foreach (array('clicks', 'registrations', 'orders') as $key) {
+            foreach (self::$queriesKeys as $key) {
                 if (!isset($counts[$key])) {
                     $counts[$key] = 0;
                 }

@@ -2,18 +2,25 @@
 /**
  * Строка таблицы статистики
  *
- * @param string $clicks
- * @param string $registrations
- * @param string $orders
+ * @param array $row
  */
 
-use_helper('sfAdStat');
+$columns = sfConfig::get('app_ad_stat_plugin_columns');
+$tableColumns = sfConfig::get('app_ad_stat_plugin_table_columns');
+
+$row = $row->getRawValue();
 
 ?>
 
-<td class="center"><?php echo $clicks ?></td>
-<td class="center"><?php echo $registrations ?></td>
-<td class="center"><?php echo conversion($registrations, $clicks) ?></td>
-<td class="center"><?php echo $orders ?></td>
-<td class="center"><?php echo conversion($orders, $clicks) ?></td>
+<?php foreach ($tableColumns as $column): ?>
+<td class="center">
+    <?php if (isset($columns[$column]['partial'])): ?>
+        <?php include_partial($columns[$column]['partial'], array('row' => $row)) ?>
+    <?php elseif (array_key_exists($column, $row)): ?>
+        <?php echo $row[$column] ?>
+    <?php else: ?>
+        &mdash;
+    <?php endif; ?>
+</td>
+<?php endforeach; ?>
  

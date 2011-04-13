@@ -9,3 +9,11 @@ all:
       medium:   utm_medium
       content:  utm_content
       campaign: utm_campaign
+    columns:
+      clicks:
+        title: Переходы
+        query: PluginAdClickQuery
+    table_columns:
+      - clicks
+    chart_columns:
+      - clicks

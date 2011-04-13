@@ -24,7 +24,7 @@
                 <?php foreach ($stat as $content => $row): ?>
                     <tr>
                         <td><?php echo $content ?></td>
-                        <?php include_partial('table_row', $row) ?>
+                        <?php include_partial('table_row', array('row' => $row)) ?>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>

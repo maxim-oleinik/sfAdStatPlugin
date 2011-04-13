@@ -11,6 +11,9 @@ use_javascript('/sfAdStatPlugin/js/highcharts.js');
 
 $stat = $stat->getRawValue();
 
+$columns = sfConfig::get('app_ad_stat_plugin_columns');
+$chartColumns = sfConfig::get('app_ad_stat_plugin_chart_columns');
+
 ?>
 
 <div id="chart_container" style="height: 400px;">
@@ -31,7 +34,11 @@ $(document).ready(function() {
             text: '<?php echo ($fromDate) ?  $fromDate->format('d.m.Y') : '?' ?> - <?php echo ($tillDate) ? $tillDate->format('d.m.Y') : '?' ?>'
         },
         xAxis: {
-            categories: ['Переходы', 'Регистрации', 'Заказы']
+            categories: [
+            <?php foreach ($chartColumns as $column): ?>
+                '<?php echo isset($columns[$column]['title']) ? $columns[$column]['title'] : $column ?>',
+            <?php endforeach; ?>
+            ]
         },
         yAxis: {
             min: 0,
@@ -66,9 +73,9 @@ $(document).ready(function() {
             {
                 name: '<?php echo $key ?>',
                 data: [
-                    <?php echo $row['clicks'] ?>,
-                    <?php echo $row['registrations'] ?>,
-                    <?php echo $row['orders'] ?>
+                <?php foreach ($chartColumns as $column): ?>
+                    <?php echo $row[$column] ?>,
+                <?php endforeach; ?>
                 ]
             },
             <?php endforeach; ?>

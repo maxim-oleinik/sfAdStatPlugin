@@ -22,7 +22,7 @@
                 <?php foreach ($stat as $source => $row): ?>
                     <tr>
                         <td><?php echo link_to($source, 'sfAdStatStatSource', array('source' => $source)) ?></td>
-                        <?php include_partial('table_row', $row) ?>
+                        <?php include_partial('table_row', array('row' => $row)) ?>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>

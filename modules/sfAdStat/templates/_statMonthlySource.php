@@ -7,12 +7,15 @@
 
 use_helper('I18N');
 
-// итого
-$total = array(
-    'clicks' => 0,
-    'registrations'   => 0,
-    'orders' => 0,
-);
+$stat = $stat->getRawValue();
+
+$columns = sfConfig::get('app_ad_stat_plugin_columns');
+$tableColumns = sfConfig::get('app_ad_stat_plugin_table_columns');
+
+$total = array();
+foreach ($tableColumns as $column) {
+    $total[$column] = 0;
+}
 
 ?>
 
@@ -21,20 +24,22 @@ $total = array(
     <tbody>
     <?php foreach ($stat as $content => $row): ?>
         <?php
-            $total['clicks']        += $row['clicks'];
-            $total['registrations'] += $row['registrations'];
-            $total['orders']        += $row['orders'];
+            foreach ($tableColumns as $column) {
+                if (array_key_exists($column, $row)) {
+                    $total[$column] += $row[$column];
+                }
+            }
         ?>
         <tr>
             <td class="right"><?php echo __($content) ?></td>
-            <?php include_partial('sfAdStat/table_row', $row) ?>
+            <?php include_partial('sfAdStat/table_row', array('row' => $row)) ?>
         </tr>
     <?php endforeach; ?>
     </tbody>
     <tfoot>
         <tr>
             <td class="right">Всего за период</td>
-            <?php include_partial('sfAdStat/table_row', $total) ?>
+            <?php include_partial('sfAdStat/table_row', array('row' => $total)) ?>
         </tr>
     </tfoot>
 </table>
