@@ -161,3 +161,28 @@ sfAdStatPlugin
         [yml]
         ad_stat_plugin:
           user_click_id_column: click_id
+
+
+Модули статистики
+---------------------------------------------------
+
+  * settings.yml
+
+        [yml]
+        enabled_modules: [..., sfAdStatAdmin, sfAdClickAdmin]
+
+  * security.yml
+
+        [yml]
+        default:
+          credentials: super_admin
+
+  * Ссылку в меню sfAdminDashPlugin в app.yml
+
+        [yml]
+        categories:
+          AdStat:
+            credentials: super_admin
+            items:
+              "Клики":
+                url:    sfAdClick
