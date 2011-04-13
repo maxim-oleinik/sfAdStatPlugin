@@ -1,7 +1,7 @@
 <?php
 
     /**
-     * Посчтитать конверсию
+     * Посчитать конверсию
      *
      * @param  numeric|null $dividend
      * @param  numeric|null $divisor
@@ -20,6 +20,5 @@
             return '∞';
         }
 
-        return sprintf('%01.1f', $dividend / $divisor * 100);
+        return sprintf('%01.3f', $dividend / $divisor * 100);
     }
- 

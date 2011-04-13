@@ -1,7 +1,17 @@
 <?php
+namespace sfAdStatPlugin\Routing;
 
+use sfEvent, sfRequestRoute, sfDoctrineRouteCollection;
+
+
+/**
+ * Роутинг плагина
+ */
 class sfAdStatRouting
 {
+    /**
+     * Статистика
+     */
     static public function addRouteForAdStatAdmin(sfEvent $event)
     {
         $routing = $event->getSubject();
@@ -53,6 +63,10 @@ class sfAdStatRouting
         ));
     }
 
+
+    /**
+     * Клики
+     */
     static public function addRouteForAdClickAdmin(sfEvent $event)
     {
         $routing = $event->getSubject();

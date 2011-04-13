@@ -24,7 +24,7 @@ class sfAdStatPluginConfiguration extends sfPluginConfiguration
 
         foreach (array('sfAdStatAdmin', 'sfAdClickAdmin') as $module) {
             if (in_array($module, sfConfig::get('sf_enabled_modules', array()))) {
-                $this->dispatcher->connect('routing.load_configuration', array('sfAdStatRouting', 'addRouteFor'.str_replace('sf', '', $module)));
+                $this->dispatcher->connect('routing.load_configuration', array('sfAdStatPlugin\Routing\sfAdStatRouting', 'addRouteFor'.str_replace('sf', '', $module)));
             }
         }
     }
