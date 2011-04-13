@@ -19,17 +19,19 @@ generator:
         source:     { label: Источник }
         medium:     { label: Тип }
         content:    { label: Объявление }
+        user_agent: { label: UserAgent }
+        referer:    { label: Referer }
         created_at: { label: Дата }
       list:
         title: Рекламные переходы | <a href="#" onclick="$('#sf_admin_bar').slideToggle()">Поиск &darr;</a>
-        display: [campaign, source, medium, content, user_agent, remote_addr, referer, request, created_at]
+        display: [created_at, campaign, source, medium, content, user_agent, remote_addr, referer]
         sort: [created_at, desc]
         max_per_page: 50
         actions: {}
         object_actions: {}
         batch_actions: {}
       filter:
-        display: [campaign, source, medium, content, created_at]
+        display: [campaign, source, medium, content, user_agent, referer, created_at]
       form:    ~
       edit:    ~
       new:     ~
