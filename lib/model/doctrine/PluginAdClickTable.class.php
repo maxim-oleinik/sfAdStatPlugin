@@ -22,8 +22,7 @@ class PluginAdClickTable extends Doctrine_Table
         foreach ($stats as &$stat) {
             $stat = $stat
                 ->filterAdDateInterval($fromDate, $tillDate)
-                ->groupByAdSource()
-                ->execute();
+                ->fetchGroupByAdSource();
         }
 
         return self::formatStat($stats);
@@ -46,8 +45,7 @@ class PluginAdClickTable extends Doctrine_Table
             $stat = $stat
                 ->filterAdDateInterval($fromDate, $tillDate)
                 ->filterAdSource($source)
-                ->groupByAdContent()
-                ->execute();
+                ->fetchGroupByAdContent();
         }
 
         return self::formatStat($stats);
@@ -70,8 +68,7 @@ class PluginAdClickTable extends Doctrine_Table
             $stat = $stat
                 ->filterAdDateInterval($fromDate, $tillDate)
                 ->filterAdSource($source)
-                ->groupAdDaily()
-                ->execute();
+                ->fetchGroupAdDaily();
         }
 
         return self::formatStat($stats);
@@ -94,8 +91,7 @@ class PluginAdClickTable extends Doctrine_Table
             $stat = $stat
                 ->filterAdDateInterval($fromDate, $tillDate)
                 ->filterAdSource($source)
-                ->groupAdMonthly()
-                ->execute();
+                ->fetchGroupAdMonthly();
         }
 
         return self::formatStat($stats);
@@ -118,8 +114,7 @@ class PluginAdClickTable extends Doctrine_Table
             $stat = $stat
                 ->filterAdDateInterval($fromDate, $tillDate)
                 ->filterAdContent($content)
-                ->groupAdDaily()
-                ->execute();
+                ->fetchGroupAdDaily();
         }
 
         return self::formatStat($stats);
@@ -151,8 +146,26 @@ class PluginAdClickTable extends Doctrine_Table
      * Перегруппировать массив со статистикой
      *
      * @static
-     * @param  array $stat
-     * @return array
+     * @param  array $stat array(
+     *                         'clicks' => array(
+     *                             'yandex' => 54,
+     *                             'begun'  => 11,
+     *                         ),
+     *                         'registrations' => array(
+     *                             'yandex' => 17,
+     *                         ),
+     *                     )
+     *
+     * @return array       array(
+     *                         'yandex' => array(
+     *                             'clicks'        => 54,
+     *                             'registrations' => 17,
+     *                         ),
+     *                         'begun' => array(
+     *                             'clicks'        => 11,
+     *                             'registrations' => 0,
+     *                         ),
+     *                     )
      */
     protected static function formatStat(array $stat)
     {

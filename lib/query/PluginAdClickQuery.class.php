@@ -13,7 +13,6 @@ class PluginAdClickQuery extends PluginAdStatQueryAbstract
     static public function createAdStatQuery()
     {
         return parent::create(null, __CLASS__)
-            ->setHydrationMode(Doctrine_Core::HYDRATE_NONE)
             ->from('AdClick ac');
     }
 

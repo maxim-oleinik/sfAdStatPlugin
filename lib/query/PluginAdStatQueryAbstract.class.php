@@ -66,58 +66,66 @@ abstract class PluginAdStatQueryAbstract extends Doctrine_Query
     /**
      * Группировка по источнику
      *
-     * @return PluginAdStatQueryAbstract
+     * @return array
      */
-    public function groupByAdSource()
+    public function fetchGroupByAdSource()
     {
         $adAlias = $this->getAdAlias();
 
         return $this
+                ->setHydrationMode(Doctrine_Core::HYDRATE_NONE)
                 ->select("{$adAlias}.source, count({$this->getRootAlias()}.id)")
                 ->groupBy("{$adAlias}.source")
-                ->orderBy("{$adAlias}.source");
+                ->orderBy("{$adAlias}.source")
+                ->execute();
     }
 
     /**
      * Группировка по объявлению
      *
-     * @return PluginAdStatQueryAbstract
+     * @return array
      */
-    public function groupByAdContent()
+    public function fetchGroupByAdContent()
     {
         $adAlias = $this->getAdAlias();
 
         return $this
+                ->setHydrationMode(Doctrine_Core::HYDRATE_NONE)
                 ->select("{$adAlias}.content, count({$this->getRootAlias()}.id)")
                 ->groupBy("{$adAlias}.content")
-                ->orderBy("{$adAlias}.content");
+                ->orderBy("{$adAlias}.content")
+                ->execute();
     }
 
     /**
      * Группировка по дням
      *
-     * @return PluginAdStatQueryAbstract
+     * @return array
      */
-    public function groupAdDaily()
+    public function fetchGroupAdDaily()
     {
         return $this
+                ->setHydrationMode(Doctrine_Core::HYDRATE_NONE)
                 ->select("DATE_FORMAT({$this->getAdDateColumn()}, '%Y-%m-%d') date, count({$this->getRootAlias()}.id)")
                 ->groupBy('date')
-                ->orderBy('date');
+                ->orderBy('date')
+                ->execute();
     }
 
     /**
      * Группировка по месяцам
      *
-     * @return PluginAdStatQueryAbstract
+     * @return array
      */
-    public function groupAdMonthly()
+    public function fetchGroupAdMonthly()
     {
         $dateColumn = $this->getAdDateColumn();
 
         return $this
+                ->setHydrationMode(Doctrine_Core::HYDRATE_NONE)
                 ->select("DATE_FORMAT({$dateColumn}, '%M') date, count({$this->getRootAlias()}.id)")
                 ->groupBy('date')
-                ->orderBy($dateColumn);
+                ->orderBy($dateColumn)
+                ->execute();
     }
 }
