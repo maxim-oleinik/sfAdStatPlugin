@@ -34,7 +34,7 @@ class sfAdStatAdminActions extends sfActions
     {
         $this->forward404Unless($this->source = $request->getParameter('source'));
 
-        $this->init('@sfAdStatDailyStatSource?source='.$this->source, $request);
+        $this->init('@sfAdStatStatDailySource?source='.$this->source, $request);
 
         $this->stat = PluginAdClickTable::getStatDailySource($this->source, $this->fromDate, $this->tillDate);
     }
@@ -46,7 +46,7 @@ class sfAdStatAdminActions extends sfActions
     {
         $this->forward404Unless($this->content = $request->getParameter('content'));
 
-        $this->init('@sfAdStatDailyStatContent?content='.$this->content, $request);
+        $this->init('@sfAdStatStatDailyContent?content='.$this->content, $request);
 
         $this->stat = PluginAdClickTable::getStatDailyContent($this->content, $this->fromDate, $this->tillDate);
     }
