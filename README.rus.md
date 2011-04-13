@@ -180,9 +180,49 @@ sfAdStatPlugin
   * Ссылку в меню sfAdminDashPlugin в app.yml
 
         [yml]
-        categories:
-          AdStat:
-            credentials: super_admin
-            items:
-              "Клики":
-                url:    sfAdClick
+        sf_admin_dash:
+          categories:
+            AdStat:
+              credentials: super_admin
+              items:
+                "Клики":
+                  url:    sfAdClick
+                "Статистика рекламы":
+                  url:    sfAdStatStat
+
+  * Настроить дополнительные колонки для вывода статистики в app.yml
+
+        [yml]
+        ad_stat_plugin:
+          columns:
+            clicks:
+              title: Переходы
+              query: PluginAdClickQuery
+            registrations:
+              title: Регистрации
+              query: UserQuery       # см PluginAdStatQueryAbstract
+            regs_clicks_conversion:
+              title: Регистрации\Переходы, %
+              partial: sfAdStatAdmin/regs_clicks_conversion
+            orders:
+              title: Заказы
+              query: OrderQuery
+            orders_clicks_conversion:
+              title: Заказы\Переходы, %
+              partial: sfAdStatAdmin/orders_clicks_conversion
+            orders_regs_conversion:
+              title: Заказы\Регистрации, %
+              partial: sfAdStatAdmin/orders_regs_conversion
+          table_columns:
+            - clicks
+            - registrations
+            - regs_clicks_conversion
+            - orders
+            - orders_clicks_conversion
+            - orders_regs_conversion
+          chart_columns:
+            - clicks
+            - registrations
+            - orders
+
+    TODO: пример query и партиала
