@@ -148,11 +148,11 @@ class PluginAdClickTable extends Doctrine_Table
      * @static
      * @param  array $stat array(
      *                         'clicks' => array(
-     *                             'yandex' => 54,
-     *                             'begun'  => 11,
+     *                             array('yandex', 54),
+     *                             array('begun',  11),
      *                         ),
      *                         'registrations' => array(
-     *                             'yandex' => 17,
+     *                             array('yandex', 17),
      *                         ),
      *                     )
      *

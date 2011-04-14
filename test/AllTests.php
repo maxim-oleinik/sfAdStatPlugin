@@ -18,6 +18,7 @@ class AllTests extends \PHPUnit_Framework_TestSuite
 
         $base  = dirname(__FILE__);
         $files = \sfFinder::type('file')->name('*Test.php')->in(array(
+            $base.'/unit',
             $base.'/functional',
         ));
 
