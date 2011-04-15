@@ -17,3 +17,8 @@ all:
       - clicks
     chart_columns:
       - clicks
+    # Поисковые и пр. боты, клики которых мы не должны учитывать
+    bots:
+      - AdsBot-Google
+      - Yandex
+      - Direct

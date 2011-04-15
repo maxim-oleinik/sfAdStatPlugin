@@ -36,68 +36,76 @@ class sfAdStatFilter extends sfFilter
     {
         $filterChain->execute();
 
-        if (!$this->context->getUser()->isAuthenticated()) {
+        // Авторизованных не учитываем
+        if ($this->context->getUser()->isAuthenticated()) {
+            return;
+        }
 
-            $request = $this->context->getRequest();
 
-            // Если юзер свеженький и куки еще нет
-            if (!$request->getCookie($this->cookieName)) {
+        $request = $this->context->getRequest();
+        $response = $this->context->getResponse();
 
-                // Проверяем, является ли ссылка рекламной
-                $values = array();
-                $isValidRequest = true;
-                foreach ($this->requestParams as $origin => $param) {
-                    if (! $values[$origin] = $request->getParameter($param)) {
-                        $isValidRequest = false;
-                        break;
-                    }
-                }
+        // Не учитываем тех, у кого есть кука
+        if ($request->getCookie($this->cookieName)) {
+            return;
+        }
 
-                $response = $this->context->getResponse();
 
-                if ($isValidRequest) {
-
-                    $pathInfo = $request->getPathInfoArray();
-
-                    $forwardedFor = $request->getForwardedFor();
-                    $remoteAddress = $forwardedFor ? $forwardedFor[0] : $request->getRemoteAddress();
-
-                    $AdClick = new AdClick;
-                    $AdClick->fromArray(array_merge($values, array(
-                        'user_agent'  => $pathInfo['HTTP_USER_AGENT'],
-                        'remote_addr' => $remoteAddress,
-                        'referer'     => $request->getReferer(),
-                        'request'     => $request->getUri(),
-                    )));
-                    $AdClick->save();
-
-                    // Куку ставим JS во избежание накрутки
-                    $js = "<script type=\"text/javascript\" src=\"/sfAdStatPlugin/js/jquery.cookie.js\"></script>\n".
-                          "<script id=\"ad_click_script\" type=\"text/javascript\">\n".
-                          "//<[CDATA[\n".
-                          "$(function(){\n".
-                          "  if(parent.location == document.location){\n".
-                          // В JS передаем кол-во дней для `expires`
-                          "    $.cookie('{$this->cookieName}', '{$AdClick->getId()}', { expires: {$this->cookieExpires} });\n".
-                          "  } else {\n".
-                          "    parent.location = document.location;\n".
-                          "  }\n".
-                          "});\n".
-                          "//]]>\n".
-                          "</script>\n";
-
-                    $content = str_replace('</body>', $js.'</body>', $response->getContent());
-                    $response->setContent($content);
-
+        // Проверяем, является ли ссылка рекламной
+        $values = array();
+        foreach ($this->requestParams as $origin => $param) {
+            if (! $values[$origin] = $request->getParameter($param)) {
                 // Если это не рекламный клик, тогда просто помечаем пользователя,
                 // и последующие рекламные клики от него не учитываем.
-                } else {
-                    $response->setCookie($this->cookieName, 'null', time() + $this->cookieExpires * 86400);
-                }
-
+                $response->setCookie($this->cookieName, 'null', time() + $this->cookieExpires * 86400);
+                return;
             }
         }
-    }
 
+
+        // Режем ботов
+        $pathInfo = $request->getPathInfoArray();
+        $userAgent = $pathInfo['HTTP_USER_AGENT'];
+
+        $bots = sfConfig::get('app_ad_stat_plugin_bots', array());
+
+        foreach ($bots as $bot) {
+            if (stripos($userAgent, $bot) !== false) {
+                return;
+            }
+        }
+
+
+        // Сохраняем клик и вешаем куку через JS
+        $forwardedFor = $request->getForwardedFor();
+        $remoteAddress = $forwardedFor ? $forwardedFor[0] : $request->getRemoteAddress();
+
+        $AdClick = new AdClick;
+        $AdClick->fromArray(array_merge($values, array(
+            'user_agent'  => $userAgent,
+            'remote_addr' => $remoteAddress,
+            'referer'     => $request->getReferer(),
+            'request'     => $request->getUri(),
+        )));
+        $AdClick->save();
+
+        // Куку ставим JS во избежание накрутки
+        $js = "<script type=\"text/javascript\" src=\"/sfAdStatPlugin/js/jquery.cookie.js\"></script>\n".
+              "<script id=\"ad_click_script\" type=\"text/javascript\">\n".
+              "//<[CDATA[\n".
+              "$(function(){\n".
+              "  if(parent.location == document.location){\n".
+              // В JS передаем кол-во дней для `expires`
+              "    $.cookie('{$this->cookieName}', '{$AdClick->getId()}', { expires: {$this->cookieExpires} });\n".
+              "  } else {\n".
+              "    parent.location = document.location;\n".
+              "  }\n".
+              "});\n".
+              "//]]>\n".
+              "</script>\n";
+
+        $content = str_replace('</body>', $js.'</body>', $response->getContent());
+        $response->setContent($content);
+    }
 
 }

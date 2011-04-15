@@ -96,4 +96,24 @@ abstract class sfAdStatFilterTest extends \myFunctionalTestCase
             ->with('response')->checkElement('#ad_click_script', false);
     }
 
+
+    /**
+     * Игнорировать ботов
+     */
+    public function testIgnoreBotClick()
+    {
+        $this->assertNotNull(\sfConfig::get('app_ad_stat_plugin_bots'));
+
+        $this->browser
+            ->setHttpHeader('User-Agent', 'Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)')
+            ->get($adTarget = $this->generateUrl('homepage', array(
+                'utm_source'   => $adSource = 'yandex.ru',
+                'utm_medium'   => $adMedium = 'referal',
+                'utm_content'  => $adContent = 'Adv content',
+                'utm_campaign' => $adCampaign = 'campaign 1',
+            )))
+            ->with('model')->check('AdClick', array(), 0, $found)
+            ->with('response')->checkElement('#ad_click_script', false);
+    }
+
 }
