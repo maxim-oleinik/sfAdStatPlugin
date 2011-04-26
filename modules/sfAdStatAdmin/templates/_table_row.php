@@ -15,7 +15,7 @@ $row = $row->getRawValue();
 <?php foreach ($tableColumns as $column): ?>
 <td>
     <?php if (isset($columns[$column]['partial'])): ?>
-        <?php include_partial($columns[$column]['partial'], array('row' => $row)) ?>
+        <?php include_partial($columns[$column]['partial'], array('row' => $row, 'params' => $params->getRawValue())) ?>
     <?php elseif (array_key_exists($column, $row)): ?>
         <?php echo $row[$column] ?>
     <?php else: ?>
@@ -23,4 +23,3 @@ $row = $row->getRawValue();
     <?php endif; ?>
 </td>
 <?php endforeach; ?>
- 

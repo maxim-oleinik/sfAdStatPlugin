@@ -8,6 +8,9 @@
  * @param array        $stat
  * @param sfFormFilter $filter
  */
+
+$params = $filter->getDefaults();
+unset($params['_csrf_token']);
 ?>
 
 <div id="sf_admin_container">
@@ -22,9 +25,11 @@
                 <?php include_partial('table_head', array('title' => 'Объявление')) ?>
                 <tbody>
                 <?php foreach ($stat as $content => $row): ?>
+                    <?php $params['source'] = array('text' => $source); ?>
+                    <?php $params['content'] = array('text' => $content); ?>
                     <tr>
                         <td><?php echo $content ?></td>
-                        <?php include_partial('table_row', array('row' => $row)) ?>
+                        <?php include_partial('table_row', array('row' => $row, 'params' => $params)) ?>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>
