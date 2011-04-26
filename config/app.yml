@@ -19,6 +19,12 @@ all:
       - clicks
     # Поисковые и пр. боты, клики которых мы не должны учитывать
     bots:
-      - AdsBot-Google
-      - Yandex
-      - Direct
+      - google
+      - yandex
+      - direct
+      - facebook
+      - bitlybot
+      - metauri
+      - twitter
+      - TweetmemeBot
+      - yahoo
