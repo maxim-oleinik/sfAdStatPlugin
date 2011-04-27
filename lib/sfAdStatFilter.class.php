@@ -90,22 +90,26 @@ class sfAdStatFilter extends sfFilter
         $AdClick->save();
 
         // Куку ставим JS во избежание накрутки
-        $js = "<script type=\"text/javascript\" src=\"/sfAdStatPlugin/js/jquery.cookie.js\"></script>\n".
-              "<script id=\"ad_click_script\" type=\"text/javascript\">\n".
-              "//<[CDATA[\n".
-              "$(function(){\n".
-              "  if(parent.location == document.location){\n".
-              // В JS передаем кол-во дней для `expires`
-              "    $.cookie('{$this->cookieName}', '{$AdClick->getId()}', { expires: {$this->cookieExpires} });\n".
-              "  } else {\n".
-              "    parent.location = document.location;\n".
-              "  }\n".
-              "});\n".
-              "//]]>\n".
-              "</script>\n";
+        if (sfConfig::get('app_ad_stat_plugin_use_js_cookie')) {
+            $js = "<script type=\"text/javascript\" src=\"/sfAdStatPlugin/js/jquery.cookie.js\"></script>\n".
+                  "<script id=\"ad_click_script\" type=\"text/javascript\">\n".
+                  "//<[CDATA[\n".
+                  "$(function(){\n".
+                  "  if(parent.location == document.location){\n".
+                  // В JS передаем кол-во дней для `expires`
+                  "    $.cookie('{$this->cookieName}', '{$AdClick->getId()}', { expires: {$this->cookieExpires} });\n".
+                  "  } else {\n".
+                  "    parent.location = document.location;\n".
+                  "  }\n".
+                  "});\n".
+                  "//]]>\n".
+                  "</script>\n";
+            $content = str_replace('</body>', $js.'</body>', $response->getContent());
+            $response->setContent($content);
 
-        $content = str_replace('</body>', $js.'</body>', $response->getContent());
-        $response->setContent($content);
+        } else {
+            $response->setCookie($this->cookieName, $AdClick->getId(), time() + $this->cookieExpires * 86400);
+        }
     }
 
 }

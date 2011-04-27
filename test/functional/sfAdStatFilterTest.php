@@ -1,6 +1,8 @@
 <?php
 namespace Test\sfAdStatPlugin;
 
+use sfConfig;
+
 
 /**
  * Регистрация перехода по рекламной ссылке
@@ -49,8 +51,15 @@ abstract class sfAdStatFilterTest extends \myFunctionalTestCase
                 'remote_addr' => $adRemoteAddr,
                 'referer'  => $adReferer,
                 'request'  => 'http://localhost'. $adTarget,
-            ), 1, $found)
-            ->with('response')->checkElement('#ad_click_script', true);
+            ), 1, $found);
+
+        if (sfConfig::get('app_ad_stat_plugin_use_js_cookie')) {
+            $this->browser
+                ->with('response')->checkElement('ad_click_script', true);
+        } else {
+            $this->browser
+                ->with('response')->setsCookie(\sfConfig::get('app_ad_stat_plugin_id_cookie_name'), $found[0]->getId());
+        }
     }
 
 
