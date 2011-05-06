@@ -89,6 +89,31 @@ abstract class sfAdStatFilterTest extends \myFunctionalTestCase
 
 
     /**
+     * Игнорировать куку для указанных объявлений
+     */
+    public function testIgnoreCookie()
+    {
+        $this->browser->getContext(true);
+        $this->browser->setConfigValue('app_ad_stat_plugin_ignore_cookie_for', array('yandex'));
+
+        $this->browser
+            ->setCookie(\sfConfig::get('app_ad_stat_plugin_id_cookie_name'), '1')
+            ->get($this->generateUrl('homepage', array(
+                'utm_source'   => $advSource = 'yandex',
+                'utm_medium'   => $advMedium = 'referal',
+                'utm_content'  => $advContent = 'Adv content',
+                'utm_campaign' => $adcCampaign = 'campaign 1',
+            )))
+            ->with('model')->check('AdClick', array(
+                'source' => $advSource,
+                'medium' => $advMedium,
+                'content' => $advContent,
+                'campaign' => $adcCampaign,
+            ), 1);
+    }
+
+
+    /**
      * Игнорировать ботов
      */
     public function testIgnoreBotClick()

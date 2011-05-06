@@ -57,7 +57,19 @@ class sfAdStatFilter extends sfFilter
 
         // Не учитываем тех, у кого есть кука
         if ($request->getCookie($this->cookieName)) {
-            return;
+            $f = false;
+            if ($ignore = sfConfig::get('app_ad_stat_plugin_ignore_cookie_for')) {
+                foreach ($ignore as $source) {
+                    if ($source == $request->getParameter($this->requestParams['source'])) {
+                        $f = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!$f) {
+                return;
+            }
         }
 
         $response = $this->context->getResponse();
