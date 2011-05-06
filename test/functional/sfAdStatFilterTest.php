@@ -10,24 +10,6 @@ use sfConfig;
 abstract class sfAdStatFilterTest extends \myFunctionalTestCase
 {
     /**
-     * Авторизован, переход по рекламной ссылке не учитываем
-     */
-    public function testAuthenticated()
-    {
-        $this->authenticateUser();
-        $this->browser
-            ->get($this->generateUrl('homepage', array(
-                'utm_source'   => $advSource = 'yandex.ru',
-                'utm_medium'   => $advMedium = 'referal',
-                'utm_content'  => $advContent = 'Adv content',
-                'utm_campaign' => $adcCampaign = 'campaign 1',
-            )))
-            ->with('model')->check('AdClick', array(), 0)
-            ->with('response')->checkElement('#ad_click_script', false);
-    }
-
-
-    /**
      * Cookie не установлена, переход по рекламной ссылке
      */
     public function testWithNoCookieAndValidUrl()

@@ -43,11 +43,6 @@ class sfAdStatFilter extends sfFilter
     {
         $filterChain->execute();
 
-        // Авторизованных не учитываем
-        if ($this->context->getUser()->isAuthenticated()) {
-            return;
-        }
-
         $request = $this->context->getRequest();
 
         // Не GET запрос не учитываем
