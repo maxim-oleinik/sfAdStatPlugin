@@ -19,6 +19,13 @@ class sfAdStatFilter extends sfFilter
      */
     public function __construct($context, $parameters = array())
     {
+        if (empty($parameters['user_agent_black_list'])) {
+            $parameters['user_agent_black_list'] = sfConfig::get('app_ad_stat_plugin_bots', array());
+        }
+        if (empty($parameters['ip_black_list'])) {
+            $parameters['ip_black_list'] = sfConfig::get('app_ad_stat_plugin_ip_black_list', array());
+        }
+
         parent::__construct($context, $parameters);
 
         $this->cookieName    = sfConfig::get('app_ad_stat_plugin_id_cookie_name');
@@ -32,7 +39,7 @@ class sfAdStatFilter extends sfFilter
      *
      * @param sfFilterChain $filterChain
      */
-    public function execute($filterChain)
+    public function execute(sfFilterChain $filterChain)
     {
         $filterChain->execute();
 
@@ -52,39 +59,25 @@ class sfAdStatFilter extends sfFilter
 
 
         // Проверяем, является ли ссылка рекламной
-        $values = array();
-        foreach ($this->requestParams as $origin => $param) {
-            if (! $values[$origin] = $request->getParameter($param)) {
-                // Если это не рекламный клик, тогда просто помечаем пользователя,
-                // и последующие рекламные клики от него не учитываем.
-                $response->setCookie($this->cookieName, 'null', time() + $this->cookieExpires * 86400);
-                return;
-            }
-        }
+        // Если это не рекламный клик, тогда просто помечаем пользователя,
+        // и последующие рекламные клики от него не учитываем.
+        $server = $request->getPathInfoArray();
+        $forwardedFor = $request->getForwardedFor();
+        $server['REMOTE_ADDR']  = $forwardedFor ? $forwardedFor[0] : $request->getRemoteAddress();
+        $server['HTTP_REFERER'] = $request->getReferer();
 
-
-        // Режем ботов
-        $pathInfo = $request->getPathInfoArray();
-        $userAgent = $pathInfo['HTTP_USER_AGENT'];
-
-        $bots = sfConfig::get('app_ad_stat_plugin_bots', array());
-
-        foreach ($bots as $bot) {
-            if (stripos($userAgent, $bot) !== false) {
-                return;
-            }
+        if (!$values = $this->checkClick($server, $request->getGetParameters())) {
+            $response->setCookie($this->cookieName, 'null', time() + $this->cookieExpires * 86400);
+            return;
         }
 
 
         // Сохраняем клик и вешаем куку через JS
-        $forwardedFor = $request->getForwardedFor();
-        $remoteAddress = $forwardedFor ? $forwardedFor[0] : $request->getRemoteAddress();
-
         $AdClick = new AdClick;
         $AdClick->fromArray(array_merge($values, array(
-            'user_agent'  => $userAgent,
-            'remote_addr' => $remoteAddress,
-            'referer'     => $request->getReferer(),
+            'user_agent'  => $server['HTTP_USER_AGENT'],
+            'remote_addr' => $server['REMOTE_ADDR'],
+            'referer'     => $server['HTTP_REFERER'],
             'request'     => $request->getUri(),
         )));
         $AdClick->save();
@@ -112,4 +105,40 @@ class sfAdStatFilter extends sfFilter
         }
     }
 
+
+    /**
+     * Проверить валидность рекламного клика
+     */
+    public function checkClick(array $server, array $query)
+    {
+        // Проверяем, является ли ссылка рекламной
+        $values = array();
+        foreach ($this->requestParams as $origin => $param) {
+            if (empty($query[$param])) {
+                return false;
+            }
+            $values[$origin] = $query[$param];
+        }
+
+
+        // Режем ботов
+        if (empty($server['HTTP_USER_AGENT'])) {
+            return false;
+        }
+        if ($bots = $this->getParameter('user_agent_black_list')) {
+            foreach ($bots as $bot) {
+                if (stripos($server['HTTP_USER_AGENT'], $bot) !== false) {
+                    return false;
+                }
+            }
+        }
+        // Рефа нет + запрещенный IP
+        if ($this->hasParameter('ip_black_list') && empty($server['HTTP_REFERER'])) {
+            if (in_array($server['REMOTE_ADDR'], $this->getParameter('ip_black_list'))) {
+                return false;
+            }
+        }
+
+        return $values;
+    }
 }

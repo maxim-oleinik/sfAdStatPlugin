@@ -64,24 +64,6 @@ abstract class sfAdStatFilterTest extends \myFunctionalTestCase
 
 
     /**
-     * Cookie не установлена, ссылка не содержит необходимых параметров
-     */
-    public function testWithNoCookieAndInvalidUrl()
-    {
-        $this->browser
-            ->get($this->generateUrl('homepage', array(
-                'utm_source'   => 'yandex.ru',
-                'utm_medium'   => 'referal',
-                'utm_content'  => 'Adv content',
-            )))
-            ->with('response')->begin()
-                ->setsCookie(\sfConfig::get('app_ad_stat_plugin_id_cookie_name'), 'null')
-            ->end()
-            ->with('model')->check('AdClick', array(), 0);
-    }
-
-
-    /**
      * Cookie уже есть
      */
     public function testWithCookieExists()

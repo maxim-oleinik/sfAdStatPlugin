@@ -13,6 +13,7 @@ all:
       content:  utm_content      # Версия объявления
 
     # Поисковые и пр. боты, клики которых мы не должны учитывать
+    # TODO: вынести в БД
     bots:
       - google
       - yandex
@@ -23,6 +24,15 @@ all:
       - twitter
       - TweetmemeBot
       - yahoo
+      - mail.ru
+      - resolver
+      - friendfeed
+      - PycURL
+      - postrank
+      - wikiwix
+    ip_black_list:
+      - 65.52.6.151   # FB
+      - 93.186.236.84 # VK
 
     # Статистика
     columns:
