@@ -48,15 +48,19 @@ class sfAdStatFilter extends sfFilter
             return;
         }
 
-
         $request = $this->context->getRequest();
-        $response = $this->context->getResponse();
+
+        // Не GET запрос не учитываем
+        if (!$request->isMethod('get')) {
+            return;
+        }
 
         // Не учитываем тех, у кого есть кука
         if ($request->getCookie($this->cookieName)) {
             return;
         }
 
+        $response = $this->context->getResponse();
 
         // Проверяем, является ли ссылка рекламной
         // Если это не рекламный клик, тогда просто помечаем пользователя,

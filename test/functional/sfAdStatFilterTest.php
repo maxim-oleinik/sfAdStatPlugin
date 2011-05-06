@@ -107,4 +107,21 @@ abstract class sfAdStatFilterTest extends \myFunctionalTestCase
             ->with('response')->checkElement('#ad_click_script', false);
     }
 
+
+    /**
+     * Не GET-запрос
+     */
+    public function testIgnoreNotGet()
+    {
+        $this->browser
+            ->post($this->generateUrl('homepage', array(
+                'utm_source'   => $adSource = 'yandex.ru',
+                'utm_medium'   => $adMedium = 'referal',
+                'utm_content'  => $adContent = 'Adv content',
+                'utm_campaign' => $adCampaign = 'campaign 1',
+            )))
+            ->with('model')->check('AdClick', array(), 0, $found)
+            ->with('response')->checkElement('#ad_click_script', false);
+    }
+
 }
