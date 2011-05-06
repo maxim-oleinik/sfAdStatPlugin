@@ -29,9 +29,9 @@ generator:
         max_per_page: 50
         actions: {}
         object_actions: {}
-        batch_actions: {}
+        batch_actions: { _delete: ~ }
       filter:
-        display: [campaign, source, medium, content, user_agent, referer, created_at]
+        display: [campaign, source, medium, content, user_agent, remote_addr, referer, created_at]
       form:    ~
       edit:    ~
       new:     ~
